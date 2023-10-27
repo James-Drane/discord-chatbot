@@ -2,7 +2,7 @@ import Discord from 'discord.js';
 
 type ResponseFunction = (msg: Discord.Message<boolean>, directMention: boolean) => string;
 
-const DEFAULT_COOLDOWN = 10 * 60;
+const DEFAULT_COOLDOWN = 60 * 60;
 
 export class BotResponse {
     private isOnCooldown: boolean;
