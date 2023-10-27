@@ -40,4 +40,17 @@ describe('BotResponse', () => {
         const response = botResponse.getResponse(mockMessage);
         expect(response).to.be.undefined;
     });
+
+    it('should not give a response if words containing the trigger phrases are used', () => {
+        // Adjust the triggerPhrases to include "son" for this test
+        const triggerPhrases = ["son"];
+        const responseFunc = (msg) => `Mock Response`;
+        const responseLogic = BotResponse.getStandardResponseLogic(triggerPhrases, responseFunc);
+        botResponse = new BotResponse(responseLogic, 0.1);
+    
+        // Test a message that includes a word containing the trigger phrase
+        mockMessage = { content: "person" };
+        const response = botResponse.getResponse(mockMessage);
+        expect(response).to.be.undefined;
+    });
 });

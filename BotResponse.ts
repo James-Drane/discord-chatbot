@@ -27,14 +27,12 @@ export class BotResponse {
         setTimeout(() => { this.isOnCooldown = false; }, this.cooldownSeconds * 1000);
     }
 
-    static checkMessageForTriggerPhrases(msg: Discord.Message<boolean>, triggerPhrases: string[]): boolean {
-        const message = msg.content.toLowerCase();
-        return triggerPhrases.filter(tp => message.includes(tp)).length > 0;
-    }
-
     static getStandardResponseLogic(triggerPhrases: string[], response: (msg: Discord.Message<boolean>) => string): ResponseFunction {
         return (msg, directMention) => {
-            const containsTriggerPhrase = BotResponse.checkMessageForTriggerPhrases(msg, triggerPhrases);
+            const message = msg.content.toLowerCase();
+            const containsTriggerPhrase = triggerPhrases.some(tp => {
+                return new RegExp(`\\b${tp}\\b`, 'i').test(message); // Regular expression to match the trigger phrase as a whole word
+            });
             if (directMention || containsTriggerPhrase) {
                 return response(msg);
             }
