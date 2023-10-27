@@ -13,6 +13,7 @@ describe('BotResponseManager', () => {
         fakeMessage = {
             content: '',
             mentions: {
+                everyone: false,
                 has: sinon.stub().returns(false)
             }
         } as any;
@@ -59,5 +60,13 @@ describe('BotResponseManager', () => {
         fakeMessage.content = 'some trigger content';
         botResponseManager.getResponse(fakeMessage);
         expect(fakeBotResponse.setCooldown.calledOnce).to.be.true;
+    });
+
+    it('should not respond to generic mentions like @here', () => {
+        fakeMessage.content = 'hey @here, respond to this';
+        fakeMessage.mentions.has.withArgs(fakeClientUser).returns(true);
+        fakeMessage.mentions.everyone = true; // Simulating that it's not a direct mention of the bot
+        botResponseManager.getResponse(fakeMessage);
+        expect(fakeBotResponse.getResponse.calledWithExactly(fakeMessage, false)).to.be.true; // Expecting no response as it's not a direct mention
     });
 });

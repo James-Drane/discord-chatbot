@@ -14,10 +14,11 @@ export class BotResponseManager {
 
     public getResponse(msg: Discord.Message<boolean>): string {
         const content = msg.content.toLowerCase();
-        const directMention = content.includes(this.botName) || msg.mentions.has(this.user);
+        const isTagged = msg.mentions.has(this.user) && !msg.mentions.everyone;
+        const directMention = content.includes(this.botName) || isTagged
         const validResponses = this.responses.filter(br => br.getResponse(msg, directMention));
         
-        if (validResponses.length || directMention) {
+        if (validResponses.length) {
             const randomResponseIndex = Math.floor(Math.random() * validResponses.length);
             const chosenResponse = validResponses[randomResponseIndex];
             const response = chosenResponse.getResponse(msg, directMention);
